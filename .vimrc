@@ -1,18 +1,57 @@
 syntax on
+
+" 表示オプション ****************************
+"  行番号表示
 set number
-set smartcase
-set smartindent
-set smarttab
-set tabstop=8
-set shiftwidth=8
-set nowrapscan
-set incsearch
-set autoindent
-set mouse=a
-set nocompatible
+"  カーソルライン表示
 set cursorline
-set laststatus=2
+"  ルーラー表示
+set ruler
+
+" 検索オプション ****************************
+"  検索文字に大文字と小文字混在した時だけ区別
+set smartcase
+"  大文字と小文字を区別しない
+set ignorecase
+"  末尾から先頭へループして検索
+set nowrapscan
+"  検索文字をハイライト
+set hlsearch
+"  インクリメンタルサーチ
+set incsearch
+
+" TAB/インデントオプション *******************
+"  行頭の余白内でタブを打つとshiftwidthだけインデント
+set smarttab
+"  画面上でタブ文字が占める幅
+set tabstop=8
+"  タブ入力を複数の空白に置き換える
+" set expandtab
+"  自動インデントでズレる幅
+set shiftwidth=8
+"  連続した空白に対してtab, backspaceでカーソルが動く幅
+set softtabstop=8
+"  改行時に入力された行の末尾に合わせて次の行のインデントを増減
+set smartindent
+"  新しい行のインデントを現在行と同じにする
+set autoindent
+
+" マウス・キー動作****************************
+"  マウス有効
+set mouse=a
 set backspace=2
+
+set laststatus=2
+"  swpファイルを作らない
+set noswapfile
+
+"  エンコーディング: UTF-8
+set enc=utf-8
+
+"  タブ補完
+set wildmode=longest,full
+"  DIFF左右表示
+set diffopt=vertical
 
 hi Normal ctermbg=black ctermfg=grey
 hi StatusLine term=none cterm=none ctermfg=black ctermbg=grey
@@ -25,43 +64,46 @@ map <C-j> :GtagsCursor<CR>
 map <C-n> :cn<CR>
 map <C-p> :cp<CR>
 
-" grep
+
+" Uniteオプション *******************************
+" 大文字小文字を区別しない
+let g:unite_enable_ignore_case = 1
+let g:unite_enable_smart_case = 1
+
+" カーソル位置の単語をgrep
 nnoremap <silent> ,g  :<C-u>Unite grep:. -buffer-name=search-buffer<CR><C-R><C-W>
+" grep検索結果の再呼出
+nnoremap <silent> ,r :<C-u>UniteResume search-buffer<CR>
+
+" unite grep に ag(The Silver Searcher) を使う
 if executable('ag')
 	let g:unite_source_grep_command = 'ag'
 	let g:unite_source_grep_default_opts = '--nogroup --nocolor --column'
 	let g:unite_source_grep_recursive_opt = ''
 endif
 
-" for dein
-if &compatible
-	set nocompatible               " Be iMproved
-endif
-
+" DEIN設定 **************************************
 set runtimepath^=~/.vim/dein/repos/github.com/Shougo/dein.vim
-
 call dein#begin(expand('~/.vim/dein'))
-call dein#add('Shougo/dein.vim')
-
-" Add or remove your plugins here:
-call dein#add('Shougo/unite.vim')
-call dein#add('Shougo/vimproc', {'build': 'make'})
-call dein#add('rking/ag.vim')
-call dein#add('ujihisa/unite-colorscheme')
-call dein#add('itchyny/lightline.vim')
-call dein#add('scrooloose/syntastic')
-call dein#add('tpope/vim-fugitive')
-
+	"  プラグインリスト
+	call dein#add('Shougo/dein.vim')
+	call dein#add('Shougo/unite.vim')
+	call dein#add('Shougo/vimproc', {'build': 'make'})
+	call dein#add('rking/ag.vim')
+	call dein#add('ujihisa/unite-colorscheme')
+	call dein#add('itchyny/lightline.vim')
+	call dein#add('scrooloose/syntastic')
+	call dein#add('tpope/vim-fugitive')
 call dein#end()
 
 filetype plugin indent on
 
-" If you want to install not installed plugins on startup.
+"  未インストールのプラグインがあればインストール
 if dein#check_install()
 	call dein#install()
 endif
 
-" for lightline
+" lightline設定 *********************************
 let g:lightline = {
 			\ 'colorscheme': 'powerline',
 			\ 'mode_map': {'c': 'NORMAL'},
