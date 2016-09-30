@@ -1,26 +1,37 @@
 syntax on
 
-" 表示オプション ****************************
+" 表示オプション **********************************************************************
 "  行番号表示
 set number
 "  カーソルライン表示
 set cursorline
 "  ルーラー表示
 set ruler
+"  ウィンドウの末尾から2行目にステータスラインを常時表示
+set laststatus=2
+" コマンドラインに使われる画面上の行数
+set cmdheight=1
+" 対応する括弧やブレースを表示する
+set showmatch
 
-" 検索オプション ****************************
+"set list
+"set listchars=tab:>-
+"hi NonText guibg=NONE guifg=DarkGreen
+"hi SpecialKey guibg=NONE guifg=Gray40
+
+" 検索オプション *********************************************************************
 "  検索文字に大文字と小文字混在した時だけ区別
 set smartcase
 "  大文字と小文字を区別しない
 set ignorecase
 "  末尾から先頭へループして検索
-set nowrapscan
+" set nowrapscan
 "  検索文字をハイライト
 set hlsearch
 "  インクリメンタルサーチ
 set incsearch
 
-" TAB/インデントオプション *******************
+" TAB/インデントオプション ***********************************************************
 "  行頭の余白内でタブを打つとshiftwidthだけインデント
 set smarttab
 "  画面上でタブ文字が占める幅
@@ -36,14 +47,19 @@ set smartindent
 "  新しい行のインデントを現在行と同じにする
 set autoindent
 
-" マウス・キー動作****************************
+" マウス・キー動作 ********************************************************************
 "  マウス有効
 set mouse=a
+"  バックスペースの挙動を変更
 set backspace=2
+"  ヤンクしたものをクリップボードに格納
+set clipboard=unnamed,autoselect
 
-set laststatus=2
+" バックアップ、swpファイル ***********************************************************
 "  swpファイルを作らない
 set noswapfile
+"  backupファイルを作らない
+set nobackup
 
 "  エンコーディング: UTF-8
 set enc=utf-8
@@ -57,15 +73,16 @@ hi Normal ctermbg=black ctermfg=grey
 hi StatusLine term=none cterm=none ctermfg=black ctermbg=grey
 hi CursorLine term=none ctermfg=none ctermbg=darkgrey guifg=#8000ff gui=bold
 
-" for GNU global
+" キーマップ **************************************************************************
+"  GNU Global
 map <C-g> :Gtags
 map <C-h> :Gtags -f %<CR>
 map <C-j> :GtagsCursor<CR>
+
 map <C-n> :cn<CR>
 map <C-p> :cp<CR>
 
-
-" Uniteオプション *******************************
+" Uniteオプション *********************************************************************
 " 大文字小文字を区別しない
 let g:unite_enable_ignore_case = 1
 let g:unite_enable_smart_case = 1
@@ -75,6 +92,11 @@ nnoremap <silent> ,g  :<C-u>Unite grep:. -buffer-name=search-buffer<CR><C-R><C-W
 " grep検索結果の再呼出
 nnoremap <silent> ,r :<C-u>UniteResume search-buffer<CR>
 
+nnoremap [unite]    <Nop>
+nmap     <Space>u [unite]
+"  バッファ一覧
+nnoremap <silent> [unite]b   :<C-u>Unite buffer<CR>
+
 " unite grep に ag(The Silver Searcher) を使う
 if executable('ag')
 	let g:unite_source_grep_command = 'ag'
@@ -82,10 +104,10 @@ if executable('ag')
 	let g:unite_source_grep_recursive_opt = ''
 endif
 
-" DEIN設定 **************************************
+" プラグイン設定 ****************************************************************************
 set runtimepath^=~/.vim/dein/repos/github.com/Shougo/dein.vim
 call dein#begin(expand('~/.vim/dein'))
-	"  プラグインリスト
+	"  リスト
 	call dein#add('Shougo/dein.vim')
 	call dein#add('Shougo/unite.vim')
 	call dein#add('Shougo/vimproc', {'build': 'make'})
@@ -103,21 +125,22 @@ if dein#check_install()
 	call dein#install()
 endif
 
-" lightline設定 *********************************
+" ステータスバー設定 ******************************************************************************************************************************************************************************************
 let g:lightline = {
-			\ 'colorscheme': 'powerline',
-			\ 'mode_map': {'c': 'NORMAL'},
-			\ 'active': {
-			\   'left': [ ['mode', 'paste'], ['fugitive'] ]
-			\ },
-			\ 'component': {
-			\   'lineinfo': 't %3l:%-2v',
-			\ },
-			\ 'component_function': {
-			\   'fugitive': 'MyFugitive'
-			\ }
-			\ }
+	\ 'colorscheme': 'powerline',
+	\ 'mode_map': {'c': 'NORMAL'},
+	\ 'active': {
+	\   'left': [ ['mode', 'paste'], ['fugitive'] ]
+	\ },
+	\ 'component': {
+	\   'lineinfo': 't %3l:%-2v',
+	\ },
+	\ 'component_function': {
+	\   'fugitive': 'MyFugitive'
+	\ }
+\ }
 
+"  gitのブランチ名を表示
 function! MyFugitive()
 	try
 		if &ft !~? 'vimfiler\|gundo' && exists('*fugitive#head') && strlen(fugitive#head())
