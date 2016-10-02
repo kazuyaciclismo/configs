@@ -82,6 +82,12 @@ map <C-j> :GtagsCursor<CR>
 map <C-n> :cn<CR>
 map <C-p> :cp<CR>
 
+nnoremap [git]  <Nop>
+nmap     <Space>g [git]
+nnoremap <silent> [git]s :Gstatus<CR>
+nnoremap <silent> [git]d :Gdiff<CR>
+
+
 " Uniteオプション *********************************************************************
 " 大文字小文字を区別しない
 let g:unite_enable_ignore_case = 1
@@ -96,6 +102,7 @@ nnoremap [unite]    <Nop>
 nmap     <Space>u [unite]
 "  バッファ一覧
 nnoremap <silent> [unite]b   :<C-u>Unite buffer<CR>
+nnoremap <silent> [unite]f   :<C-u>Unite file<CR>
 
 " unite grep に ag(The Silver Searcher) を使う
 if executable('ag')
@@ -116,6 +123,8 @@ call dein#begin(expand('~/.vim/dein'))
 	call dein#add('itchyny/lightline.vim')
 	call dein#add('scrooloose/syntastic')
 	call dein#add('tpope/vim-fugitive')
+	call dein#add('ujihisa/neco-look')
+	call dein#add('Shougo/neocomplete.vim')
 call dein#end()
 
 filetype plugin indent on
@@ -151,6 +160,40 @@ function! MyFugitive()
 	return ''
 endfunction
 
+" neocomplete **********************************************************************************
+"  起動時に有効化
+let g:neocomplete#enable_at_startup = 1
+"  大文字が入力されるまで大文字小文字の区別を無視する
+let g:neocomplete#enable_smart_case = 1
+"  _(アンダースコア)区切りの補完を有効化
+let g:neocomplete#enable_underbar_completion = 1
+let g:neocomplete#enable_camel_case_completion  =  1
+"  ポップアップメニューで表示される候補の数
+let g:neocomplete#max_list = 20
+"  シンタックスをキャッシュするときの最小文字長
+let g:neocomplete#sources#syntax#min_keyword_length =3
+"  補完を表示する最小文字数
+let g:neocomplete#auto_completion_start_length = 2
+"  preview window を閉じない
+let g:neocomplete#enable_auto_close_preview =0
+"  AutoCmd InsertLeave * silent! pclose!
+let g:neocomplete#max_keyword_width = 10000
 
+inoremap <expr><CR>   pumvisible() ? "\<C-n>" . neocomplete#close_popup()  : "<CR>"
+
+if !exists('g:neocomplete#text_mode_filetypes')
+	let g:neocomplete#text_mode_filetypes = {}
+endif
+let g:neocomplete#text_mode_filetypes = {
+	\ 'rst': 1,
+	\ 'markdown': 1,
+	\ 'gitrebase': 1,
+	\ 'gitcommit': 1,
+	\ 'vcs-commit': 1,
+	\ 'hybrid': 1,
+	\ 'text': 1,
+	\ 'help': 1,
+	\ 'tex': 1,
+	\ }
 
 
